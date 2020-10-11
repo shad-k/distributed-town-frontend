@@ -25,34 +25,44 @@ const Store = ({ children }) => {
 
   useEffect(() => {
     (async () => {
-      /* If the user has a valid session with our server, it will return {authorized: true, user: user} */
-      let loggedIn = false;
-      if (magic && magic.user) {
-        loggedIn = await magic.user.isLoggedIn();
+      if (typeof magic !== "undefined") {
+        /* If the user has a valid session with our server, it will return {authorized: true, user: user} */
+        let loggedIn = false;
+        if (magic && magic.user) {
+          loggedIn = await magic.user.isLoggedIn();
+        }
+
+        /* If db returns {authorized: false}, there is no valid session, so log user out of their session with Magic if it exists */
+        // if (!loggedIn) {
+        //   await magic.user.logout();
+        // }
+
+        console.log("LOGGEDIN");
+        console.log(loggedIn);
+
+        setLoggedIn(loggedIn);
+        // setIsLoading(false);
       }
-
-      /* If db returns {authorized: false}, there is no valid session, so log user out of their session with Magic if it exists */
-      // if (!loggedIn) {
-      //   await magic.user.logout();
-      // }
-
-      console.log("LOGGEDIN");
-      console.log(loggedIn);
-
-      setLoggedIn(loggedIn.email);
-      setIsLoading(false);
     })();
   }, [magic]);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, [loggedIn]);
 
   return (
     // `children` (passed as props in this file) represents the component nested inside <Store /> in `/pages/index.js` and `/pages/login.js`
     <LoggedInContext.Provider value={[loggedIn, setLoggedIn]}>
       <MagicContext.Provider value={[magic]}>
         <LoadingContext.Provider value={[isLoading, setIsLoading]}>
-          <div className="flex flex-row">
-            <Layout />
-            {children}
-          </div>
+          {!isLoading ? (
+            <div className="flex flex-row">
+              <Layout />
+              {children}
+            </div>
+          ) : (
+            <div>Loading...</div>
+          )}
         </LoadingContext.Provider>
       </MagicContext.Provider>
     </LoggedInContext.Provider>
