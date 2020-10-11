@@ -11,7 +11,39 @@ function SignupPhaseOne(props) {
   const [magic] = useContext(MagicContext);
   const [skills, setSkills] = useState([]);
   const [categories, setCategories] = useState([]);
-
+  const categories1 = [{
+    name: 'Blockchain & DLT',
+    skills: ['DeFi', 'Architecture', 'Smart Contracts', 'Blockchain Infrastructure']
+  }, {
+    name: 'Tech',
+    skills: ['Backend', 'Mobile Dev', 'Web Dev', 'Frontend']
+  }, {
+    name: 'Protocol',
+    skills: ['Network Design', 'Governance & Consensus', 'Game Theory', 'Tokenomics']
+  }
+  ];
+   const categories2 = [{
+    name: 'Creative Arts',
+    skills: ['Music', 'Painting', 'Photography', 'Video-making']
+  }, {
+    name: 'Lifestyle',
+    skills: ['Training & Sport', 'Hiking', 'Biking', 'Writing']
+  }, {
+    name: 'Activities',
+    skills: ['Performance & Theather', 'Project Management', 'Production', 'Gaming']
+  }
+  ];
+  const categories3 = [{
+    name: 'Community Life',
+    skills: ['Fun & Entertainment', 'Administration & Management', 'Community Life', 'Leadership & Public Speaking']
+  }, {
+    name: 'Professional',
+    skills: ['Teaching', 'Art, Music & Creativity', 'Accounting', 'Legal']
+  }, {
+    name: 'At Home',
+    skills: ['Cooking', 'Gardening', 'Householding', 'Company']
+  }
+  ]
 
 
   // Similar to componentDidMount and componentDidUpdate:
@@ -46,18 +78,15 @@ function SignupPhaseOne(props) {
         <div className="flex flex-col space-y-8">
           <h1>Tell us about you!</h1>
           <p>Pick your Skills (between 1 and 3) Description of the process</p>
-          <SkillsCard
-            title={'Blockchain & DLT'}
-            skills={['DeFi', 'Architecture', 'Smart Contracts', 'Blockchain Infrastructure']}
-          />
-           <SkillsCard
-            title={'Tech'}
-            skills={['Backend', 'Mobile Dev', 'Web Dev', 'Frontend']}
-          />
-           <SkillsCard
-            title={'Protocol'}
-            skills={['Network Design', 'Governance & Consensus', 'Game Theory', 'Tokenomics']}
-          />
+          {props.categories.map((category, i) => {
+            return (
+              <SkillsCard
+                key={i}
+                title={category.name}
+                skills={category.skills}
+              />
+            );
+          })}
         </div>
       </div>
       <div className="absolute bottom-0 flex justify-center items-center">
