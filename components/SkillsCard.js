@@ -13,7 +13,7 @@ function SkillsCard({ title, skills, selectSkill, setSkillLevel }) {
                 disabled={skill.disabled}
               />
               <div className="flex flex-col">
-                <p>{skill.name}</p>
+                <p>{skill}</p>
                 <input
                   type="range"
                   value={skill.selected ? skill.level : 0}

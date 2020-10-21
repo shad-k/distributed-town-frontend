@@ -66,7 +66,7 @@ const Index = (props) => {
       setToken(res);
 
       let result = await fetch(
-        `http://3.250.21.129:3005/api/user/login`,
+        `http://localhost:3005/api/user/login`,
         {
           method: "POST",
           headers: {
@@ -88,7 +88,7 @@ const Index = (props) => {
     if (selectedPill !== -1)
       setUserInfo({
         ...userInfo,
-        category: props.skills[selectedPill].subcategory,
+        skill: props.skills[selectedPill],
       });
   }, [selectedPill]);
 
@@ -115,7 +115,7 @@ const Index = (props) => {
               <SkillPill
                 onClick={() => setSelectedPill(i)}
                 key={i}
-                text={skill.name}
+                text={skill}
                 selected={selectedPill === i}
               />
             );
@@ -142,11 +142,10 @@ const Index = (props) => {
 };
 
 export async function getServerSideProps(context) {
-  let skills = await fetch("http://3.250.21.129:3005/api/skill", {
+  let skills = await fetch("http://localhost:3005/api/skill", {
     method: "GET",
   });
   skills = await skills.json();
-
   return {
     props: { skills }, // will be passed to the page component as props
   };

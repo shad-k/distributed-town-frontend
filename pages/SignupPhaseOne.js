@@ -18,65 +18,14 @@ function SignupPhaseOne(props) {
   const [token, setToken] = useContext(TokenContext);
 
   const [selectedSkillsIndexes, setSelectedSkillsIndexes] = useState([]);
-  function getDitoMultFactor(category) {
-    let mult = 0;
-    switch (category) {
-      case "At Home":
-        mult = 6;
-        break;
-      case "Community":
-        mult = 12;
-        break;
-      case "Professional":
-        mult = 12;
-        break;
-    }
-
-    return mult;
-  }
+  
 
   useEffect(() => {
-    fetch("http://3.250.21.129:3005/api/skill", { method: "GET" })
+    console.log(userInfo);
+    fetch(`http://localhost:3005/api/skill?skill=${userInfo.skill}`, { method: "GET" })
       .then((response) => response.json())
       .then((skills) => {
-        let skillsByCats = new Map();
-        for (let skill of skills) {
-          if (skillsByCats.has(skill.subcategory)) {
-            let subCategory = skillsByCats.get(skill.subcategory);
-            skillsByCats.set(skill.subcategory, {
-              ditoMultFactor: getDitoMultFactor(skill.subcategory),
-              skills: [
-                ...subCategory.skills,
-                {
-                  name: skill.name,
-                  selected: false,
-                  disabled: false,
-                  level: 60,
-                },
-              ],
-            });
-          } else {
-            skillsByCats.set(skill.subcategory, {
-              ditoMultFactor: getDitoMultFactor(skill.subcategory),
-              skills: [
-                {
-                  name: skill.name,
-                  selected: false,
-                  disabled: false,
-                  level: 60,
-                },
-              ],
-            });
-          }
-        }
-
-        let categories = [];
-        for (let [name, { ditoMultFactor, skills }] of skillsByCats.entries()) {
-          if (userInfo.category === name)
-            categories.push({ name, ditoMultFactor, skills });
-        }
-
-        setCategories(categories);
+        setCategories(skills.categories);
       })
       .catch((error) => console.error(error.message));
   }, []);
@@ -89,7 +38,7 @@ function SignupPhaseOne(props) {
             ...category,
             skills: category.skills.map((skill, skIndex) => {
               if (skIndex === skillIndex) {
-                return { ...skill, selected: !skill.selected };
+                return { skill: skill, selected: !skill.selected };
               }
 
               return {
@@ -176,7 +125,7 @@ function SignupPhaseOne(props) {
           skills.push({
             skill: skill.name,
             level: skill.level / 10,
-            redeemableDitos: (skill.level / 10) * category.ditoMultFactor,
+            redeemableDitos: (skill.level / 10) * category.credits,
           });
       }
     }
@@ -224,7 +173,7 @@ function SignupPhaseOne(props) {
             return (
               <SkillsCard
                 key={i}
-                title={category.name}
+                title={category.subCat}
                 skills={category.skills}
                 selectSkill={(skillIndex) => selectSkill(i, skillIndex)}
                 setSkillLevel={(skillIndex, skillLevel) =>
