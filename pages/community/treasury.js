@@ -13,6 +13,8 @@ function CommunityTreasury() {
   const router = useRouter();
 
   const [isJoining, setIsJoining] = useState(false);
+  const [currency, setCurrency] = useState("DAI");
+  const [amount, setAmount] = useState(500);
 
   const [communities, setCommunities] = useState([]);
 
@@ -53,149 +55,172 @@ function CommunityTreasury() {
   }
 
   return (
-    <div className="flex">
-      <Layout />
-      <div className="w-full h-screen flex">
-        <div className="flex flex-col items-center flex-grow space-y-8 px-8 py-4">
-          <h1 className="underline text-black text-center text-4xl">
-            Community Treasury
+    <div className="w-full h-screen flex">
+      <div className="flex flex-col items-center flex-grow space-y-8 px-8 py-32 w-7/12">
+        <h1 className="underline text-black text-center text-4xl mb-8">
+          Community Treasury
+        </h1>
+        <div className="flex flex-col  justify-center  w-3/4 space-y-4 border-2 border-denim px-8 py-5">
+          <h1 class="flex text-ceter font-bold justify-center text-2xl">
+            Add funds to Treasury
           </h1>
-          <div className="flex flex-col  justify-center  w-3/4 space-y-4 border-2 border-denim px-8 py-5">
-            <h1 class="flex text-ceter font-bold underline justify-center">
-              Add funds to Treasury
-            </h1>
 
-            <div className="flex flex-row justify-center">
-              <div className="flex flex-col w-1/2 p-3">
-                <h2 className="font-bold underline text-center mb-3">
-                  Currency
-                </h2>
-                <div className="flex flex-row justify-around ">
-                  <div className="flex flex-row items-center ">
-                    <input type="checkbox" key={"DAI"} id="DAI" />
-                    <div className="flex flex-col font-bold pl-3">
-                      <p>DAI </p>
-                    </div>
-                  </div>
-                  <div className="flex flex-row items-center">
-                    <input type="checkbox" key={"USDC"} id="USDC" />
-                    <div className="flex flex-col font-bold pl-3">
-                      <p>USDC</p>
-                    </div>
-                  </div>
-                </div>
-                <p class="text-left text-sm  text-dove-gray">
-                  Stablecoins are not regular<br></br>
-                  crypto. They are "pegged" to <br></br>
-                  Fiat (USD), so they are not<br></br>
-                  volatile (they are stable):<br></br>1 DAI = 1 Dollar<br></br>1
-                  USDC = 1 Dollar<br></br>
-                </p>
-              </div>
-
-              <div className="flex flex-col w-1/2 p-3">
-                <h2 className="font-bold underline text-center mb-3 ">
-                  Community APY
-                </h2>
-                <div className="h-3 mb-3 relative max-w-xl rounded-full h-8 border-2 border-denim overflow-hidden">
-                  <div className="w-full h-full bg-white absolute"></div>
-                  <div
-                    id="bar"
-                    className="font-bold text-white pr-2 text-right transition-all ease-out duration-1000 h-full bg-denim relative w-24"
+          <div className="flex flex-row justify-center">
+            <div className="flex flex-col w-1/2 p-3">
+              <h2 className="font-bold text-center mb-3 text-xl">Currency</h2>
+              <div className="flex flex-row justify-around ">
+                <div className="flex flex-row items-center ">
+                  <input
+                    type="radio"
+                    name="currency"
+                    key={"DAI"}
+                    id="DAI"
+                    value="DAI"
+                    checked={currency === "DAI"}
+                    className="appearance-none"
+                    onChange={e => setCurrency(e.target.value)}
+                  />
+                  <label
+                    className="flex font-bold pl-3 items-center"
+                    htmlFor="DAI"
                   >
-                    24%
-                  </div>
+                    <div className="border-black border-2 h-5 w-5 p-radio rounded-full mr-2">
+                      {currency === "DAI" && (
+                        <div className="bg-black rounded-full w-full h-full" />
+                      )}
+                    </div>
+                    <p> DAI</p>
+                  </label>
                 </div>
-
-                <p className="text-sm text-dove-gray">
-                  "Staking" is different from<br></br>
-                  "Donating" - basically your <br></br>
-                  community is "looking" these<br></br>
-                  funds to provide liquidity. In<br></br>
-                  exchange, you all get a higher<br></br>
-                  interest return!<br></br>
-                </p>
+                <div className="flex flex-row items-center">
+                  <input
+                    type="radio"
+                    name="currency"
+                    key={"USDC"}
+                    id="USDC"
+                    value="USDC"
+                    checked={currency === "USDC"}
+                    className="appearance-none"
+                    onChange={e => setCurrency(e.target.value)}
+                  />
+                  <label
+                    className="flex font-bold pl-3 radio-label items-center"
+                    htmlFor="USDC"
+                  >
+                    <div className="border-black border-2 h-5 w-5 p-radio rounded-full  mr-2">
+                      {currency === "USDC" && (
+                        <div className="bg-black rounded-full w-full h-full" />
+                      )}
+                    </div>
+                    <p> USDC</p>
+                  </label>
+                </div>
               </div>
+              <p class="text-left text-sm mt-2 text-dove-gray">
+                Stablecoins are not regular crypto. They are "pegged" to Fiat
+                (USD), so they are not volatile (they are stable):
+                <br />1 DAI = 1 Dollar <br />1 USDC = 1 Dollar
+              </p>
             </div>
 
-            <div className="flex flex-row justify-center ">
-              <div className="flex flex-col w-1/2 p-3">
-                <h2 className="font-bold underline text-center mb-3">Amount</h2>
-                <input
-                  className="justify-center text-center border border-denim h-16"
-                  type="number"
-                  value={500}
-                />
-                <p className="text-right text-sm">DAI/USDC</p>
-                <p className="text-left text-dove-gray text-sm">
-                  The amount of tokens you stake for your community
-                </p>
+            <div className="flex flex-col w-1/2 p-3">
+              <h2 className="font-bold text-xl text-center mb-3">
+                Community APY
+              </h2>
+              <div className="h-3 mb-3 relative max-w-xl rounded-xl h-8 border-2 border-denim overflow-hidden">
+                <div className="w-full h-full bg-white absolute"></div>
+                <div
+                  id="bar"
+                  className="font-bold text-white pr-2 text-right transition-all ease-out duration-1000 h-full bg-denim relative w-24 rounded-r-lg"
+                >
+                  24%
+                </div>
               </div>
 
-              <div className="flex flex-col w-1/2 p-3 space-y-2">
-                <h2 className="text-center font-bold underline">
-                  {" "}
-                  Your return
-                </h2>
-                <p className="text-left text-dove-gray">
-                  Your intial investment plus
-                </p>
-                <div className="h-3 mb-3 relative max-w-xl rounded-full h-8 border-2 border-denim overflow-hidden">
-                  <div className="w-full h-full bg-white absolute"></div>
-                  <div
-                    id="bar"
-                    className="font-bold text-white pr-2 text-right transition-all ease-out duration-1000 h-full bg-denim relative w-16"
-                  >
-                    $17.15
-                  </div>
+              <p className="text-sm text-dove-gray">
+                "Staking" is different from<br></br>
+                "Donating" - basically your <br></br>
+                community is "looking" these<br></br>
+                funds to provide liquidity. In<br></br>
+                exchange, you all get a higher<br></br>
+                interest return!<br></br>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-row justify-center ">
+            <div className="flex flex-col w-1/2 p-3">
+              <h2 className="font-bold underline text-center mb-3">Amount</h2>
+              <input
+                className="justify-center text-center border border-denim h-16 font-bold"
+                type="number"
+                value={amount}
+                onChange={e => setAmount(e.target.value)}
+              />
+              <p className="text-right text-sm">DAI/USDC</p>
+              <p className="text-left text-dove-gray text-sm">
+                The amount of tokens you stake for your community
+              </p>
+            </div>
+
+            <div className="flex flex-col w-1/2 p-3 space-y-2">
+              <h2 className="text-center font-bold underline"> Your return</h2>
+              <p className="text-left text-dove-gray">
+                Your intial investment plus:
+              </p>
+              <div className="h-3 mb-3 relative max-w-xl rounded-xl h-8 border-2 border-denim overflow-hidden">
+                <div className="w-full h-full bg-white absolute"></div>
+                <div
+                  id="bar"
+                  className="font-bold text-white pr-2 text-right transition-all ease-out duration-1000 h-full bg-denim relative w-16 rounded-r-lg"
+                >
+                  $17.15
                 </div>
-                <p className="text-left text-sm  text-dove-gray">
-                  It is based on the size of your <br></br>
-                  staking, and the amount of DiTo <br></br>
-                  you own!<br></br>
-                </p>
               </div>
+              <p className="text-left text-sm  text-dove-gray">
+                It is based on the size of your <br></br>
+                staking, and the amount of DiTo <br></br>
+                you own!<br></br>
+              </p>
             </div>
           </div>
         </div>
-        <div className="bg-blue-100 flex w-1/4 flex-grow justify-center  items-center">
-          <div className="flex flex-col border-2 border-denim ">
-            <div className="bg-denim p-4 text-center font-bold">
-              {/* <h2>{userInfo.communityContract.name}</h2> */}
-              <h2 className="text-3xl">DiTo #23</h2>
-              <p>Check-up Card</p>
+      </div>
+      <div className="bg-blue-100 flex flex-grow justify-center items-center w-5/12 py-48 px-24">
+        <div className="flex flex-col border-2 border-denim w-full h-full">
+          <div className="bg-denim p-4 text-center font-bold">
+            {/* <h2>{userInfo.communityContract.name}</h2> */}
+            <h2 className="text-3xl">DiTo #23</h2>
+            <p>Check-up Card</p>
+          </div>
+          <div className="flex flex-col justify-center bg-white p-4 space-y-12 flex-1">
+            <div className="flex flex-row items-center justify-center">
+              <p className="font-bold underline flex-1 text-center text-2xl">
+                Members
+              </p>
+              <div className="flex rounded-full h-16 w-16 font-bold text-xl flex border-2 border-denim items-center justify-center">
+                7
+              </div>
             </div>
-            <div className="flex flex-col justify-center bg-white p-4 space-y-4">
-              <div className="flex flex-row intems-center justify-end space-x-3">
-                <p className="flex pt-2 font-bold justify-start underline">
-                  Members
-                </p>
-                <div className="flex rounded-full h-10 w-10 flex border-2 border-denim items-center justify-center">
-                  7
-                </div>
+            <div className="flex flex-row items-center justify-center">
+              <p className="font-bold underline flex-1 text-center text-2xl">
+                Open Proposals
+              </p>
+              <div className="flex rounded-full h-16 w-16 font-bold text-xl flex border-2 border-ripe-lemon items-center justify-center font-bold">
+                4
               </div>
-              <div className="flex flex-row intems-center justify-end space-x-3">
-                <p className="flex pt-2 font-bold justify-start text-left underline">
-                  Open Proposals
-                </p>
-                <div className="flex rounded-full h-10 w-10 flex border-2 border-ripe-lemon items-center justify-center">
-                  4
-                </div>
+            </div>
+            <div className="flex flex-row items-center justify-center">
+              <p className="font-bold underline flex-1 text-center text-2xl">
+                Liquidity Pool
+              </p>
+              <div className="flex rounded-full h-16 w-16 font-bold text-xl flex border-2 border-alizarin items-center justify-center">
+                3k
               </div>
-              <div className="flex flex-row intems-center justify-end space-x-3">
-                <div className="flex font-bold pt-2 justify-start  text-left underline">
-                  Liquidity Pool
-                </div>
-                <div className="flex rounded-full h-10 w-10 flex border-2 border-alizarin items-center justify-center">
-                  3k
-                </div>
-              </div>
-              <div className="flex flex-col border-2  justify-center border-blue-600 p-4">
-                <p className="font-bold underline text-center ">
-                  Scarcity score
-                </p>
-                <p className="text-christi text-center">72</p>
-              </div>
+            </div>
+            <div className="flex flex-col border-4  justify-center border-blue-600 p-4 text-2xl">
+              <p className="font-bold underline text-center ">Scarcity score</p>
+              <p className="text-christi text-center">72</p>
             </div>
           </div>
         </div>
