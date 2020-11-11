@@ -48,18 +48,15 @@ const Layout = () => {
             <NavLink href="/community">Dashboard</NavLink>
             <NavLink href="#">Notifications</NavLink>
             <NavLink href="#">Settings</NavLink>
-            <li
-              className="bg-denim text-white cursor-pointer"
-              href="#"
-              onClick={e => handleLogout()}
-            >
+            <NavLink href="#" onClick={e => handleLogout()}>
               Logout
-            </li>
+            </NavLink>
           </ul>
         )}
       </nav>
     </>
   );
+  return null;
 };
 
 export default Layout;

@@ -68,8 +68,10 @@ const Store = ({ children }) => {
         try {
           /* If the user has a valid session with our server, it will return {authorized: true, user: user} */
           let loggedIn = false;
+          console.log(magic, magic.user);
           if (magic && magic.user) {
             loggedIn = await magic.user.isLoggedIn();
+            console.log(loggedIn);
           }
 
           /* If db returns {authorized: false}, there is no valid session, so log user out of their session with Magic if it exists */
