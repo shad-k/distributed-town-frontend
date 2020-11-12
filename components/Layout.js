@@ -5,7 +5,14 @@ import { LoggedInContext, MagicContext, UserInfoContext } from "./Store";
 import NavLink from "./NavLink";
 import { useRouter } from "next/router";
 
-const Layout = ({ flex = false, bgImage, logo, navBar, children }) => {
+const Layout = ({
+  flex = false,
+  splash,
+  bgImage = {},
+  logo,
+  navBar,
+  children
+}) => {
   const [loggedIn, setLoggedIn] = useContext(LoggedInContext);
   const [magic] = useContext(MagicContext);
   const [userInfo, setUserInfo] = useContext(UserInfoContext);
@@ -33,7 +40,10 @@ const Layout = ({ flex = false, bgImage, logo, navBar, children }) => {
   };
 
   const { src: bgImageSrc, alignment: bgImageAlignment } = bgImage;
-  const logoImage = logo.withImage ? "/dito-logo.svg" : "/isologo.svg";
+  let logoImage = null;
+  if (logo) {
+    logoImage = logo.withText ? "/dito-logo.svg" : "/isologo.svg";
+  }
 
   // if logged in show the nav menu, if not redirect to unlogged in index page.
   return (
@@ -43,19 +53,29 @@ const Layout = ({ flex = false, bgImage, logo, navBar, children }) => {
       </Head>
       <main
         style={{
-          ...(bgImageSrc ? { backgroundImage: `url(${bgImage.src})` } : {})
+          ...(bgImageSrc
+            ? { backgroundImage: `url(${bgImage.src})`, backgroundSize: "50%" }
+            : {})
         }}
-        className={`h-screen w-full bg-no-repeat bg-auto ${
-          bgImageAlignment === "left" ? "bg-left" : "bg-right"
-        } ${flex ? "flex" : ""}`}
+        className={`h-screen w-full bg-no-repeat bg-${bgImageAlignment} ${
+          flex ? "flex" : ""
+        }`}
       >
+        {splash && (
+          <img
+            src={`/splash-${splash.color}-${splash.variant}.svg`}
+            className={`fixed top-0 ${splash.alignment}-0 ${
+              splash.isTranslucent ? "opacity-75" : "opacity-100"
+            }`}
+          />
+        )}
+        {logoImage && (
+          <div className="pt-4 pl-4 fixed">
+            <img src={logoImage} alt="Logo" />
+          </div>
+        )}
         {navBar && (
           <nav className="flex flex-col h-screen max-w-sm p-4 border-r-2 border-denim">
-            {logo && (
-              <div>
-                <img src={logoImage} alt="Logo" />
-              </div>
-            )}
             {loggedIn && (
               <ul className="flex flex-col w-full mt-8">
                 <NavLink href="/skillwallet">Skill Wallet</NavLink>
