@@ -5,7 +5,7 @@ import { LoggedInContext, MagicContext, UserInfoContext } from "./Store";
 import NavLink from "./NavLink";
 import { useRouter } from "next/router";
 
-const Layout = () => {
+const Layout = ({ flex = false, bgImage, children }) => {
   const [loggedIn, setLoggedIn] = useContext(LoggedInContext);
   const [magic] = useContext(MagicContext);
   const [userInfo, setUserInfo] = useContext(UserInfoContext);
@@ -32,12 +32,24 @@ const Layout = () => {
     }
   };
 
+  const { src: bgImageSrc, alignment: bgImageAlignment } = bgImage;
+
   // if logged in show the nav menu, if not redirect to unlogged in index page.
   return (
     <>
       <Head>
         <title>DistributedTown</title>
       </Head>
+      <main
+        style={{
+          ...(bgImageSrc ? { backgroundImage: `url(${bgImage.src})` } : {})
+        }}
+        className={`h-screen w-full bg-no-repeat bg-auto ${
+          bgImageAlignment === "left" ? "bg-left" : "bg-right"
+        } ${flex ? "flex" : ""}`}
+      >
+        {children}
+      </main>
       <nav className="flex flex-col h-screen max-w-sm p-4 border-r-2 border-denim">
         <div>
           <img src="/isologo.svg" alt="Logo" />
