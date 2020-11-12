@@ -11,6 +11,7 @@ import Store, {
   TokenContext,
   UserInfoContext
 } from "../components/Store";
+import Layout from "../components/Layout";
 import { useRouter } from "next/router";
 import TheNav from "../components/TheNav";
 import bgImages from "../utils/bgImages.js";
@@ -54,7 +55,7 @@ const Index = props => {
       let user = await authenticateWithDb(DIDT);
       if (user) {
         setLoggedIn(user.email);
-        router.push("/skillwallet");
+        // router.push("/skillwallet");
       } else {
         throw new Error("Something went wrong, please try again!");
       }
@@ -64,14 +65,18 @@ const Index = props => {
   };
 
   return (
-    <div className="h-screen w-full flex">
+    <Layout
+      flex
+      bgImage={{ src: "/background-image.svg", alignment: "left" }}
+      className="h-screen w-full flex"
+      logo={{ withText: true }}
+    >
       <TheNav
-        logoUrl="/dito-logo.svg"
         helpCta="What is it about?"
         helpUrl="#"
         className="fixed top-0 left-0"
       />
-      <div className="h-full w-1/2 bg-denim flex justify-center items-center">
+      <div className="h-full w-1/2 flex justify-center items-center">
         <div className="p-8 bg-white flex justify-center items-center w-2/3 m-auto border border-black">
           <p className="text-center">
             <strong>Distributed Town</strong> is a new financial infrastructure
@@ -120,7 +125,7 @@ const Index = props => {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
