@@ -16,6 +16,9 @@ module.exports = {
         christi: "#3CAA14",
         "ripe-lemon": "#F1CF22",
         red: "#F50000"
+      },
+      maxWidth: {
+        xxs: "12rem"
       }
     }
   },

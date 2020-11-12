@@ -70,6 +70,12 @@ const Index = props => {
       bgImage={{ src: "/background-image.svg", alignment: "left" }}
       className="h-screen w-full flex"
       logo={{ withText: true }}
+      splash={{
+        color: "blue",
+        variant: "default",
+        alignment: "left",
+        isTranslucent: true
+      }}
     >
       <TheNav
         helpCta="What is it about?"

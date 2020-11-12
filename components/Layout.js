@@ -74,10 +74,13 @@ const Layout = ({
             className={`fixed top-0 ${splash.alignment}-0 ${
               splash.isTranslucent ? "opacity-75" : "opacity-100"
             }`}
+            style={{
+              ...(splash.isTranslucent ? { filter: "blur(2px)" } : {})
+            }}
           />
         )}
         {logoImage && (
-          <div className="pt-4 pl-4 fixed">
+          <div className="pt-4 pl-4 fixed max-w-xxs">
             <img src={logoImage} alt="Logo" />
           </div>
         )}
