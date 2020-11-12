@@ -5,6 +5,12 @@ import { LoggedInContext, MagicContext, UserInfoContext } from "./Store";
 import NavLink from "./NavLink";
 import { useRouter } from "next/router";
 
+const colors = {
+  denim: "#146EAA",
+  alizarin: "#E63229",
+  "rain-forest": "#00825B"
+};
+
 const Layout = ({
   flex = false,
   splash,
@@ -49,6 +55,34 @@ const Layout = ({
     logoImage = logo.withText ? "/dito-logo.svg" : "/isologo.svg";
   }
 
+  let splashElement = null;
+  if (splash) {
+    if (splash.variant === "quad") {
+      splashElement = (
+        <div
+          className={`absolute h-64 w-48 border-r-2 border-denim`}
+          style={{
+            background: `linear-gradient(-40deg, rgba(255, 255, 255, 1) 38%, ${
+              colors[splash.color]
+            } 38.5%)`
+          }}
+        />
+      );
+    } else {
+      splashElement = (
+        <img
+          src={`/splash-${splash.color}-${splash.variant}.svg`}
+          className={`fixed top-0 ${splash.alignment}-0 ${
+            splash.isTranslucent ? "opacity-75" : "opacity-100"
+          }`}
+          style={{
+            ...(splash.isTranslucent ? { filter: "blur(2px)" } : {})
+          }}
+        />
+      );
+    }
+  }
+
   // if logged in show the nav menu, if not redirect to unlogged in index page.
   return (
     <>
@@ -64,30 +98,22 @@ const Layout = ({
               }
             : {})
         }}
-        className={`h-screen w-full bg-no-repeat bg-${bgImageAlignment} ${
-          flex ? "flex" : ""
-        }`}
+        className={`h-screen w-full bg-no-repeat ${
+          bgImageAlignment ? "bg-" + bgImageAlignment : ""
+        } ${flex ? "flex" : ""}`}
       >
-        {splash && (
-          <img
-            src={`/splash-${splash.color}-${splash.variant}.svg`}
-            className={`fixed top-0 ${splash.alignment}-0 ${
-              splash.isTranslucent ? "opacity-75" : "opacity-100"
-            }`}
-            style={{
-              ...(splash.isTranslucent ? { filter: "blur(2px)" } : {})
-            }}
-          />
-        )}
+        {splashElement}
         {logoImage && (
-          <div className="pt-4 pl-4 fixed max-w-xxs">
+          <div
+            className={`pt-4 pl-${logo.withText ? "4" : "8"} fixed max-w-xxs`}
+          >
             <img src={logoImage} alt="Logo" />
           </div>
         )}
         {navBar && (
           <nav className="flex flex-col h-screen w-48 max-w-sm p-4 pt-64 border-r-2 border-denim">
             {loggedIn && (
-              <ul className="flex flex-col w-full mt-8">
+              <ul className="flex flex-col w-full mt-8 text-xl">
                 <NavLink href="/skillwallet">Skill Wallet</NavLink>
                 <NavLink href="/community">Dashboard</NavLink>
                 <NavLink href="#">Notifications</NavLink>
@@ -99,7 +125,7 @@ const Layout = ({
             )}
           </nav>
         )}
-        {children}
+        <div className="flex-1">{children}</div>
       </main>
     </>
   );
