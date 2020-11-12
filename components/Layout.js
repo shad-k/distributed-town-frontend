@@ -39,7 +39,11 @@ const Layout = ({
     }
   };
 
-  const { src: bgImageSrc, alignment: bgImageAlignment } = bgImage;
+  const {
+    src: bgImageSrc,
+    alignment: bgImageAlignment,
+    size: bgImageSize
+  } = bgImage;
   let logoImage = null;
   if (logo) {
     logoImage = logo.withText ? "/dito-logo.svg" : "/isologo.svg";
@@ -54,7 +58,10 @@ const Layout = ({
       <main
         style={{
           ...(bgImageSrc
-            ? { backgroundImage: `url(${bgImage.src})`, backgroundSize: "50%" }
+            ? {
+                backgroundImage: `url(${bgImage.src})`,
+                backgroundSize: `${bgImageSize ? bgImageSize : 50}%`
+              }
             : {})
         }}
         className={`h-screen w-full bg-no-repeat bg-${bgImageAlignment} ${
@@ -75,7 +82,7 @@ const Layout = ({
           </div>
         )}
         {navBar && (
-          <nav className="flex flex-col h-screen max-w-sm p-4 border-r-2 border-denim">
+          <nav className="flex flex-col h-screen w-48 max-w-sm p-4 pt-64 border-r-2 border-denim">
             {loggedIn && (
               <ul className="flex flex-col w-full mt-8">
                 <NavLink href="/skillwallet">Skill Wallet</NavLink>
