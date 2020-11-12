@@ -139,7 +139,7 @@ const Store = ({ children }) => {
                 communityContract: { address: communityContractAddress },
                 ditoBalance: ditoBalanceStr
               });
-              router.push("/skillwallet");
+              // router.push("/skillwallet");
             } catch (error) {
               console.log(error);
             }

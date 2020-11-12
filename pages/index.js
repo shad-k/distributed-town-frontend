@@ -21,6 +21,48 @@ import communityContractAbi from "../utils/communityContractAbi.json";
 import { ethers } from "ethers";
 
 const Index = props => {
+  const [, setLoggedIn] = useContext(LoggedInContext);
+  const [magic] = useContext(MagicContext);
+  const router = useRouter();
+
+  const authenticateWithDb = async DIDT => {
+    /* Pass the Decentralized ID token in the Authorization header to the database */
+
+    let res = await fetch(`${process.env.API_URL}/api/user/login`, {
+      method: "POST",
+      headers: new Headers({
+        Authorization: "Bearer " + DIDT
+      })
+    });
+
+    let data = await res.json();
+
+    /* If the user is authorized, return an object containing the user properties (issuer, publicAddress, email) */
+    /* Else, the login was not successful and return false */
+    return data.authorized ? data.user : false;
+  };
+
+  const loginHandler = async event => {
+    event.preventDefault();
+    const { email: emailInput } = event.target;
+    const email = emailInput.value;
+    try {
+      if (email.trim() === "") {
+        throw new Error("Please enter a valid email address");
+      }
+      const DIDT = await magic.auth.loginWithMagicLink({ email });
+      let user = await authenticateWithDb(DIDT);
+      if (user) {
+        setLoggedIn(user.email);
+        router.push("/skillwallet");
+      } else {
+        throw new Error("Something went wrong, please try again!");
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
     <div className="h-screen w-full flex">
       <TheNav
@@ -50,26 +92,31 @@ const Index = props => {
         <div className="pt-8 pb-4 px-2 border-2 border-denim flex flex-col space-y-4 w-3/5">
           <div className="border-2 border-red p-1">
             <div className="border-2 border-denim p-4 text-center font-bold">
-              <Link href="/create">
+              <Link href="/community/create">
                 <a>Create</a>
               </Link>
             </div>
           </div>
           <div className="border-2 border-red p-1">
             <div className="border-2 border-denim p-4 text-center font-bold">
-              <Link href="/join">
+              <Link href="/community/join">
                 <a>Join</a>
               </Link>
             </div>
           </div>
           <div className="border-2 border-red p-1">
-            <div className="border-2 border-denim p-4 flex justify-between items-center font-bold">
+            <form
+              className="border-2 border-denim p-4 flex justify-between items-center font-bold"
+              onSubmit={loginHandler}
+            >
               Login{" "}
               <input
                 className="border border-denim p-1 w-3/4"
                 placeholder="yourmail@me.io"
+                name="email"
+                type="email"
               />
-            </div>
+            </form>
           </div>
         </div>
       </div>
