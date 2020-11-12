@@ -5,7 +5,7 @@ import { LoggedInContext, MagicContext, UserInfoContext } from "./Store";
 import NavLink from "./NavLink";
 import { useRouter } from "next/router";
 
-const Layout = ({ flex = false, bgImage, children }) => {
+const Layout = ({ flex = false, bgImage, logo, children }) => {
   const [loggedIn, setLoggedIn] = useContext(LoggedInContext);
   const [magic] = useContext(MagicContext);
   const [userInfo, setUserInfo] = useContext(UserInfoContext);
@@ -33,6 +33,7 @@ const Layout = ({ flex = false, bgImage, children }) => {
   };
 
   const { src: bgImageSrc, alignment: bgImageAlignment } = bgImage;
+  const logoImage = logo.withImage ? "/dito-logo.svg" : "/isologo.svg";
 
   // if logged in show the nav menu, if not redirect to unlogged in index page.
   return (
@@ -48,24 +49,26 @@ const Layout = ({ flex = false, bgImage, children }) => {
           bgImageAlignment === "left" ? "bg-left" : "bg-right"
         } ${flex ? "flex" : ""}`}
       >
+        <nav className="flex flex-col h-screen max-w-sm p-4 border-r-2 border-denim">
+          {logo && (
+            <div>
+              <img src={logoImage} alt="Logo" />
+            </div>
+          )}
+          {loggedIn && (
+            <ul className="flex flex-col w-full mt-8">
+              <NavLink href="/skillwallet">Skill Wallet</NavLink>
+              <NavLink href="/community">Dashboard</NavLink>
+              <NavLink href="#">Notifications</NavLink>
+              <NavLink href="#">Settings</NavLink>
+              <NavLink href="#" onClick={e => handleLogout()}>
+                Logout
+              </NavLink>
+            </ul>
+          )}
+        </nav>
         {children}
       </main>
-      <nav className="flex flex-col h-screen max-w-sm p-4 border-r-2 border-denim">
-        <div>
-          <img src="/isologo.svg" alt="Logo" />
-        </div>
-        {loggedIn && (
-          <ul className="flex flex-col w-full mt-8">
-            <NavLink href="/skillwallet">Skill Wallet</NavLink>
-            <NavLink href="/community">Dashboard</NavLink>
-            <NavLink href="#">Notifications</NavLink>
-            <NavLink href="#">Settings</NavLink>
-            <NavLink href="#" onClick={e => handleLogout()}>
-              Logout
-            </NavLink>
-          </ul>
-        )}
-      </nav>
     </>
   );
   return null;

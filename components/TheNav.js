@@ -13,7 +13,7 @@ const TheNav = ({
     className={`flex items-center justify-between flex-wrap p-6 ${className}`}
   >
     <div className="flex flex-col items-end flex-shrink-0 block mr-6">
-      <img src={logoUrl} alt="DiTo Logo" />
+      {logoUrl && <img src={logoUrl} alt="DiTo Logo" />}
       <span className="font-semibold text-sm  text-gray-500 tracking-tight pr-3">
         {slogan}
       </span>
