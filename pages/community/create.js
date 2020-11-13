@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { ethers } from "ethers";
+import { useRouter } from "next/router";
 
 import {
   MagicContext,
@@ -7,10 +8,12 @@ import {
   UserInfoContext,
   TokenContext
 } from "../../components/Store";
+import RegistrationModal from "../../components/registration/RegistrationModal";
 import Layout from "../../components/Layout";
 import NicknameSelection from "../../components/NicknameSelection";
 import Button from "../../components/Button";
 import communitiesRegistryAbi from "../../utils/communitiesRegistryAbi.json";
+import RegistrationForm from "../../components/registration/RegistrationForm";
 
 const communityMeta = {
   "DLT & Blockchain": {
@@ -49,10 +52,15 @@ const communityMeta = {
 };
 
 function CommunityCreate() {
+  const [token, setToken] = useContext(TokenContext);
+  const [loggedIn, setLoggedIn] = useContext(LoggedInContext);
   const [communities, setCommunities] = useState([]);
   const [communityName, setCommunityName] = useState("");
   const [userInfo, setUserInfo] = useContext(UserInfoContext);
   const [magic] = useContext(MagicContext);
+  const router = useRouter();
+  const [modalState, setModalState] = useState(false);
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     (async function() {
@@ -81,6 +89,16 @@ function CommunityCreate() {
       method: "POST",
       body: JSON.stringify(payload)
     });
+
+    setUserInfo({
+      ...userInfo,
+      communityContract: {
+        ...userInfo.communityContract,
+        name: communityName
+      }
+    });
+
+    router.push("/community/created");
   }
 
   async function createCommunity() {
@@ -103,7 +121,12 @@ function CommunityCreate() {
       const tx = await contract.createCommunity();
       // Wait for transaction to finish
       const receipt = await tx.wait();
-      console.log(receipt);
+      setUserInfo({
+        ...userInfo,
+        communityContract: {
+          address: receipt
+        }
+      });
 
       const addTx = await contract.addCommunity(receipt);
       // Wait for transaction to finish
@@ -127,6 +150,59 @@ function CommunityCreate() {
     setCommunities(newCommunities);
   }
 
+  async function fetchUserData(DIDT) {
+    try {
+      let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
+        method: "GET",
+        headers: new Headers({
+          Authorization: "Bearer " + DIDT
+        })
+      });
+      const userData = await res.json();
+      return userData;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function handleCreateAccountClick(e) {
+    e.preventDefault();
+    try {
+      const DIDT = await magic.auth.loginWithMagicLink({ email });
+
+      setToken(DIDT);
+
+      let res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/login`,
+        {
+          method: "POST",
+          headers: new Headers({
+            Authorization: "Bearer " + DIDT
+          })
+        }
+      );
+
+      setLoggedIn(true);
+
+      const userData = await fetchUserData(DIDT);
+
+      const haSkills =
+        userData[0].skills &&
+        Array.isArray(userData[0].skills) &&
+        userData[0].skills.length > 0;
+
+      setUserInfo({
+        ...userInfo,
+        email: email,
+        skills: []
+      });
+      createCommunity();
+    } catch (err) {
+      await magic.user.logout();
+      console.error(err);
+    }
+  }
+
   return (
     <Layout
       navBar={{ hideNav: true }}
@@ -146,7 +222,7 @@ function CommunityCreate() {
         >
           <NicknameSelection
             setUserInfo={val => setCommunityName(val.username)}
-            value={userInfo.username}
+            value={userInfo && userInfo.username}
             title="Welcome to Distributed Town!"
             subtitle={
               <span>
@@ -211,11 +287,24 @@ function CommunityCreate() {
           <Button
             className="font-black font-bold text-2xl px-32"
             color="rain-forest"
-            onClick={() => createCommunity()}
+            onClick={() => setModalState(true)}
           >
             Next: Launch & Get Community Credits!
           </Button>
         </div>
+      </div>
+      <div
+        className={`modalBackground modalVisible-${modalState} bg-white flex justify-center items-center w-screen`}
+      >
+        <RegistrationForm
+          onSubmit={handleCreateAccountClick}
+          setEmail={setEmail}
+          title="Welcome to Dito"
+          email={email}
+          cta="Create Account"
+          placeholderText="Please enter your email"
+          className="flex justify-center items-center"
+        />
       </div>
     </Layout>
   );
