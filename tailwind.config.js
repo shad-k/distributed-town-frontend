@@ -15,7 +15,7 @@ module.exports = {
         "dove-gray": "#707070",
         christi: "#3CAA14",
         "ripe-lemon": "#F1CF22",
-        red: "#F50000"
+        orange: "#FFA400"
       },
       maxWidth: {
         xxs: "12rem"
