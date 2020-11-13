@@ -1,25 +1,23 @@
-import SkillPill from "../components/SkillPill";
-import Quote from "../components/Quote";
-import RegistrationModal from "../components/registration/RegistrationModal";
-import Link from "next/link";
-
 import { useContext, useEffect, useState } from "react";
+import Link from "next/link";
+import { ethers } from "ethers";
+import { get, set } from "mongoose";
+
+import SkillPill from "../../components/SkillPill";
+import Quote from "../../components/Quote";
+import RegistrationModal from "../../components/registration/RegistrationModal";
 import Store, {
   MagicContext,
   LoggedInContext,
   LoadingContext,
   TokenContext,
   UserInfoContext
-} from "../components/Store";
+} from "../../components/Store";
 import { useRouter } from "next/router";
-import TheNav from "../components/TheNav";
-import Layout from "../components/Layout";
-import bgImages from "../utils/bgImages.js";
-import { get, set } from "mongoose";
+import Layout from "../../components/Layout";
+import bgImages from "../../utils/bgImages.js";
 
-import communityContractAbi from "../utils/communityContractAbi.json";
-
-import { ethers } from "ethers";
+import communityContractAbi from "../../utils/communityContractAbi.json";
 
 const Join = props => {
   const [token, setToken] = useContext(TokenContext);
@@ -57,7 +55,7 @@ const Join = props => {
   async function fetchCommunityById(id, DIDT) {
     try {
       const response = await fetch(
-        `${process.env.API_URL}/api/community/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/community/${id}`,
         {
           method: "GET",
           headers: new Headers({
@@ -74,7 +72,7 @@ const Join = props => {
 
   async function fetchUserData(DIDT) {
     try {
-      let res = await fetch(`${process.env.API_URL}/api/user`, {
+      let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
         method: "GET",
         headers: new Headers({
           Authorization: "Bearer " + DIDT
@@ -96,12 +94,15 @@ const Join = props => {
 
       setToken(DIDT);
 
-      let res = await fetch(`${process.env.API_URL}/api/user/login`, {
-        method: "POST",
-        headers: new Headers({
-          Authorization: "Bearer " + DIDT
-        })
-      });
+      let res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/login`,
+        {
+          method: "POST",
+          headers: new Headers({
+            Authorization: "Bearer " + DIDT
+          })
+        }
+      );
 
       setLoggedIn(true);
 
@@ -124,20 +125,17 @@ const Join = props => {
           communityContract: userCommunityData
         });
 
-        // router.push("/skillwallet");
+        router.push("/skillwallet");
       } else {
-        const { publicAddress } = await magic.user.getMetadata();
-
-        await fetch("/api/getFunded", {
-          method: "POST",
-          body: JSON.stringify({ publicAddress })
+        setUserInfo({
+          ...userInfo,
+          email: email,
+          skills: userData[0].skills || []
         });
-
-        setUserInfo({ ...userInfo, email: email, skills: [] });
-
-        // router.push("/SignupPhaseOne");
+        router.push("/SignupPhaseOne");
       }
     } catch (err) {
+      await magic.user.logout();
       console.error(err);
     }
   }
@@ -155,6 +153,7 @@ const Join = props => {
   //   // if (typeof window !== "undefined") router.push("/skillwallet");
   //   return null;
   // } else {
+  console.log(process.env.NEXT_PUBLIC_API_URL);
   return (
     <Layout
       className="h-screen w-full"
@@ -164,7 +163,8 @@ const Join = props => {
         variant: "1",
         alignment: "right",
         isTranslucent: false,
-        fullHeight: false
+        fullHeight: false,
+        zIndex: -1
       }}
     >
       <div className="firstPage">
@@ -186,7 +186,11 @@ const Join = props => {
                 <SkillPill
                   onClick={() => {
                     setSelectedPill(i);
-                    toggleModal();
+                    if (loggedIn) {
+                      router.push("/SignupPhaseOne");
+                    } else {
+                      toggleModal();
+                    }
                   }}
                   key={i}
                   text={skill}
@@ -214,7 +218,7 @@ const Join = props => {
 };
 
 export async function getServerSideProps(context) {
-  let skills = await fetch(`${process.env.API_URL}/api/skill`, {
+  let skills = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/skill`, {
     method: "GET"
   });
   skills = await skills.json();

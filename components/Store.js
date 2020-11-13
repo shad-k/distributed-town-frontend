@@ -100,12 +100,21 @@ const Store = ({ children }) => {
               !userInfo.skills ||
               (userInfo.skills && userInfo.skills.length === 0)
             ) {
-              router.push("/SignupPhaseOne");
+              setUserInfo({
+                ...userInfo,
+                DIDT,
+                skills: []
+              });
+              router.push("/community/join");
             } else if (
               !userInfo.communityContract ||
               (userInfo.communityContract &&
                 !userInfo.communityContract.address)
             ) {
+              setUserInfo({
+                ...userInfo,
+                DIDT
+              });
               router.push("/SignupPhaseTwo");
             } else {
               const provider = new ethers.providers.Web3Provider(
@@ -147,7 +156,8 @@ const Store = ({ children }) => {
                 setUserInfo({
                   ...userInfo,
                   communityContract: { address: communityContractAddress },
-                  ditoBalance: ditoBalanceStr
+                  ditoBalance: ditoBalanceStr,
+                  DIDT
                 });
                 router.push("/skillwallet");
               } catch (error) {

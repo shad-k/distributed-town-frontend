@@ -19,6 +19,9 @@ module.exports = {
       },
       maxWidth: {
         xxs: "12rem"
+      },
+      backgroundPosition: {
+        bgImage: "12rem"
       }
     }
   },

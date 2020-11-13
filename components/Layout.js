@@ -76,7 +76,8 @@ const Layout = ({
             splash.isTranslucent ? "opacity-75" : "opacity-100"
           }`}
           style={{
-            ...(splash.isTranslucent ? { filter: "blur(2px)" } : {})
+            ...(splash.isTranslucent ? { filter: "blur(2px)" } : {}),
+            ...(splash.zIndex ? { zIndex: splash.zIndex } : {})
           }}
         />
       );
@@ -98,7 +99,7 @@ const Layout = ({
               }
             : {})
         }}
-        className={`h-screen w-full bg-no-repeat ${
+        className={`flex h-screen w-full bg-no-repeat bg-bgImage ${
           bgImageAlignment ? "bg-" + bgImageAlignment : ""
         }`}
       >
@@ -112,7 +113,7 @@ const Layout = ({
         )}
         {navBar && (
           <nav className="flex flex-col h-screen w-48 max-w-sm p-4 pt-64 border-r-2 border-denim">
-            {loggedIn && (
+            {loggedIn && !navBar.hideNav ? (
               <ul className="flex flex-col w-full mt-8 text-xl">
                 <NavLink href="/skillwallet">Skill Wallet</NavLink>
                 <NavLink href="/community">Dashboard</NavLink>
@@ -120,6 +121,12 @@ const Layout = ({
                 <NavLink href="#">Settings</NavLink>
                 <NavLink href="#" onClick={e => handleLogout()}>
                   Logout
+                </NavLink>
+              </ul>
+            ) : (
+              <ul className="flex flex-col w-full mt-8 text-xl justify-end items-center flex-1">
+                <NavLink href="/community/create">
+                  <img src="/create-people-button.svg" />
                 </NavLink>
               </ul>
             )}
