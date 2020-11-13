@@ -68,10 +68,8 @@ const Store = ({ children }) => {
         try {
           /* If the user has a valid session with our server, it will return {authorized: true, user: user} */
           let loggedIn = false;
-          console.log(magic, magic.user);
           if (magic && magic.user) {
             loggedIn = await magic.user.isLoggedIn();
-            console.log(loggedIn);
           }
 
           /* If db returns {authorized: false}, there is no valid session, so log user out of their session with Magic if it exists */
@@ -98,50 +96,63 @@ const Store = ({ children }) => {
             const userInfoArray = await response.json();
             const userInfo = userInfoArray[0];
 
-            const provider = new ethers.providers.Web3Provider(
-              magic.rpcProvider
-            );
-            try {
-              const signer = provider.getSigner();
-
-              // Get user's Ethereum public address
-              const address = await signer.getAddress();
-
-              const communityContractABI = communityContractAbi;
-              const communityContractAddress = userInfo.communityContract
-                ? userInfo.communityContract.address
-                : "0x759A224E15B12357b4DB2d3aa20ef84aDAf28bE7";
-              const communityContract = new ethers.Contract(
-                communityContractAddress,
-                communityContractABI,
-                signer
+            if (
+              !userInfo.skills ||
+              (userInfo.skills && userInfo.skills.length === 0)
+            ) {
+              router.push("/SignupPhaseOne");
+            } else if (
+              !userInfo.communityContract ||
+              (userInfo.communityContract &&
+                !userInfo.communityContract.address)
+            ) {
+              router.push("/SignupPhaseTwo");
+            } else {
+              const provider = new ethers.providers.Web3Provider(
+                magic.rpcProvider
               );
+              try {
+                const signer = provider.getSigner();
 
-              const ditoContractABI = ditoContractAbi;
-              const ditoContractAddress = await communityContract.tokens();
-              const ditoContract = new ethers.Contract(
-                ditoContractAddress,
-                ditoContractABI,
-                signer
-              );
+                // Get user's Ethereum public address
+                const address = await signer.getAddress();
 
-              // Send transaction to smart contract to update message and wait to finish
-              const ditoBalance = await ditoContract.balanceOf(address);
+                const communityContractABI = communityContractAbi;
+                const communityContractAddress = userInfo.communityContract
+                  ? userInfo.communityContract.address
+                  : "0x759A224E15B12357b4DB2d3aa20ef84aDAf28bE7";
+                const communityContract = new ethers.Contract(
+                  communityContractAddress,
+                  communityContractABI,
+                  signer
+                );
 
-              let ditoBalanceStr = BigNumber.from(ditoBalance).toString();
-              ditoBalanceStr = ditoBalanceStr.slice(
-                0,
-                ditoBalanceStr.length - 18
-              );
+                const ditoContractABI = ditoContractAbi;
+                const ditoContractAddress = await communityContract.tokens();
+                const ditoContract = new ethers.Contract(
+                  ditoContractAddress,
+                  ditoContractABI,
+                  signer
+                );
 
-              setUserInfo({
-                ...userInfo,
-                communityContract: { address: communityContractAddress },
-                ditoBalance: ditoBalanceStr
-              });
-              // router.push("/skillwallet");
-            } catch (error) {
-              console.log(error);
+                // Send transaction to smart contract to update message and wait to finish
+                const ditoBalance = await ditoContract.balanceOf(address);
+
+                let ditoBalanceStr = BigNumber.from(ditoBalance).toString();
+                ditoBalanceStr = ditoBalanceStr.slice(
+                  0,
+                  ditoBalanceStr.length - 18
+                );
+
+                setUserInfo({
+                  ...userInfo,
+                  communityContract: { address: communityContractAddress },
+                  ditoBalance: ditoBalanceStr
+                });
+                router.push("/skillwallet");
+              } catch (error) {
+                console.log(error);
+              }
             }
           }
 
