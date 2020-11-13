@@ -99,9 +99,9 @@ const Layout = ({
               }
             : {})
         }}
-        className={`flex h-screen w-full bg-no-repeat bg-bgImage ${
-          bgImageAlignment ? "bg-" + bgImageAlignment : ""
-        }`}
+        className={`flex h-screen w-full bg-no-repeat ${
+          navBar ? "bg-bgImage" : ""
+        } ${bgImageAlignment ? "bg-" + bgImageAlignment : ""}`}
       >
         {splashElement}
         {logoImage && (

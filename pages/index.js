@@ -99,7 +99,7 @@ const Index = props => {
           <div className="border-2 border-red p-1">
             <div className="border-2 border-denim p-4 text-center font-bold">
               <Link href="/community/create">
-                <a className="flex justify-around items-center text-xl px-16">
+                <a className="flex justify-around items-center text-xl px-8">
                   Create
                   <img src="/create-plus-button.svg" />
                 </a>
@@ -109,7 +109,7 @@ const Index = props => {
           <div className="border-2 border-red p-1 mt-2">
             <div className="border-2 border-denim p-4 text-center font-bold">
               <Link href="/community/join">
-                <a className="flex justify-around items-center text-xl px-16">
+                <a className="flex justify-around items-center text-xl px-8">
                   Join
                   <img src="/create-people-button.svg" />
                 </a>
