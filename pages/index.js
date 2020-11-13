@@ -77,11 +77,6 @@ const Index = props => {
         isTranslucent: true
       }}
     >
-      <TheNav
-        helpCta="What is it about?"
-        helpUrl="#"
-        className="fixed top-0 left-0"
-      />
       <div className="h-full w-1/2 flex justify-center items-center">
         <div className="p-8 bg-white flex justify-center items-center w-2/3 m-auto border border-black">
           <p className="text-center">

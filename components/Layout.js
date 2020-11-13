@@ -100,7 +100,7 @@ const Layout = ({
         }}
         className={`h-screen w-full bg-no-repeat ${
           bgImageAlignment ? "bg-" + bgImageAlignment : ""
-        } ${flex ? "flex" : ""}`}
+        }`}
       >
         {splashElement}
         {logoImage && (
@@ -125,7 +125,7 @@ const Layout = ({
             )}
           </nav>
         )}
-        <div className="flex-1">{children}</div>
+        <div className={`flex-1 h-full ${flex ? "flex" : ""}`}>{children}</div>
       </main>
     </>
   );
