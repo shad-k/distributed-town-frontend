@@ -67,7 +67,7 @@ const Index = props => {
   return (
     <Layout
       flex
-      bgImage={{ src: "/background-image.svg", alignment: "left" }}
+      bgImage={{ src: "/background-image.svg", alignment: "left", size: 60 }}
       className="h-screen w-full flex"
       logo={{ withText: true }}
       splash={{
@@ -77,8 +77,8 @@ const Index = props => {
         isTranslucent: true
       }}
     >
-      <div className="h-full w-1/2 flex justify-center items-center">
-        <div className="p-8 bg-white flex justify-center items-center w-2/3 m-auto border border-black">
+      <div className="h-full w-3/5 flex justify-center items-center">
+        <div className="p-8 bg-white flex justify-center items-center w-2/4 m-auto border border-black">
           <p className="text-center">
             <strong>Distributed Town</strong> is a new financial infrastructure
             for public goods, designed for the real world.
@@ -90,29 +90,35 @@ const Index = props => {
           </p>
         </div>
       </div>
-      <div className="h-full w-1/2 flex flex-col justify-center items-center">
-        <h1 className="text-3xl m-12 font-bold">
+      <div className="h-full w-2/5 flex flex-col justify-center items-center">
+        <h1 className="text-4xl m-12 font-bold">
           This is <span className="underline">your Community</span>
         </h1>
 
-        <div className="pt-8 pb-4 px-2 border-2 border-denim flex flex-col space-y-4 w-3/5">
+        <div className="pt-8 pb-4 px-2 border-2 border-denim flex flex-col w-3/5">
           <div className="border-2 border-red p-1">
             <div className="border-2 border-denim p-4 text-center font-bold">
               <Link href="/community/create">
-                <a>Create</a>
+                <a className="flex justify-around items-center text-xl px-16">
+                  Create
+                  <img src="/create-plus-button.svg" />
+                </a>
               </Link>
             </div>
           </div>
-          <div className="border-2 border-red p-1">
+          <div className="border-2 border-red p-1 mt-2">
             <div className="border-2 border-denim p-4 text-center font-bold">
               <Link href="/community/join">
-                <a>Join</a>
+                <a className="flex justify-around items-center text-xl px-16">
+                  Join
+                  <img src="/create-people-button.svg" />
+                </a>
               </Link>
             </div>
           </div>
-          <div className="border-2 border-red p-1">
+          <div className="border-2 border-red p-1 mt-8">
             <form
-              className="border-2 border-denim p-4 flex justify-between items-center font-bold"
+              className="border-2 border-denim p-4 flex justify-between items-center font-bold text-xl"
               onSubmit={loginHandler}
             >
               Login{" "}
